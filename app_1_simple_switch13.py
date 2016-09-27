@@ -29,8 +29,8 @@ class SimpleSwitch13(app_manager.RyuApp):
         #             mac3:{port3}
         #         }
         #     }
-		self.loop_restrain = {}
-        # {dpid:{(src,dst):port}}
+	self.loop_restrain = {}
+	# {dpid:{(src,dst):port}}
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
