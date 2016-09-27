@@ -1,3 +1,5 @@
+# v1.1 
+# add loop restrain and ignore ipv6 discovery packet
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event
@@ -27,6 +29,8 @@ class SimpleSwitch13(app_manager.RyuApp):
         #             mac3:{port3}
         #         }
         #     }
+		self.loop_restrain = {}
+        # {dpid:{(src,dst):port}}
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -107,9 +111,21 @@ class SimpleSwitch13(app_manager.RyuApp):
             return
         dst = eth.dst
         src = eth.src
+        data = None
+
+        if dst[0:5] == '33:33':
+            # ignore ipv6 neighbor discovery packet in
+            return
 
         dpid = datapath.id
         self.mac_to_port.setdefault(dpid, {})
+        self.loop_restrain.setdefault(dpid, {})
+
+
+        if (src, dst) in self.loop_restrain[dpid]:
+            if self.loop_restrain[dpid][(src, dst)] != in_port:
+                return
+        self.loop_restrain[dpid][(src, dst)] = in_port
 
         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
@@ -133,7 +149,7 @@ class SimpleSwitch13(app_manager.RyuApp):
                 return
             else:
                 self.add_flow(datapath, 1, match, actions)
-        data = None
+        
         if msg.buffer_id == ofproto.OFP_NO_BUFFER:
             data = msg.data
 
