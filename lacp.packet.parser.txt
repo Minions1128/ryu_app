@@ -1,0 +1,47 @@
+1. version
+    版本号，此参数必须为1
+2. actor_system_priority & partner_system_priority
+    系统优先级，默认为65535
+3. actor_system & partner_system
+    系统ID，用于LACP的MAC地址
+        active发送给passive的第一个报文中，由于不知道对端的mac地址，所以发送全0
+4.  actor_key $ partner_key
+    操作码，标识一条链路
+         active发送给passive的第一个报文中，由于不知道对端的key，所以置位和本地相同的值发送
+5. actor_port_priority & partner_port_priority
+    端口优先级，默认255
+6. actor_port & partner_port
+    端口号，默认发送和自己相同的端口号
+7. actor_state_activity & partner_state_activity
+    active位，置位为active，否则为passive
+        active发送给passive的第一个报文中，本位也置位
+8. actor_state_timeout partner_state_timeout
+    超时位，置位为短超时，3s，否则为长超时，为30s
+        默认使用短超时，parner使用长超时
+9. actor_state_aggregation & partner_state_aggregation
+    可聚合状态位，置位为可聚合，否则为不可聚合
+        默认均可聚合
+10. actor_state_synchronization & partner_state_synchronization
+    同步状态位，置位为已聚合，否则为未聚合
+        active发送给passive的第一个报文中，actor和partner此位不置位；
+        passive发送给active的报文中，actor和parnter此位也不置位；
+        active发送给passive的第二个报文中，actor置位，partner不置位
+        以后的报文中，如果没有以外，actor和parnter均置位；
+11. actor_state_collecting & partner_state_collecting
+    收包状态位，置位则可以接受包，否则为不接受包
+        在收到partner_state_synchronization置位的情况下，actor置位
+12. actor_state_distributing & partner_state_distributing
+    发包状态位，置位则可发包，否则不可发包
+        在收到partner_state_synchronization置位的情况下，actor置位
+13. actor_state_defaulted & partner_state_defaulted
+    是否可以使用partner的信息来管理自己，置位为是
+        active发送给passive的第一个报文中，actor置位，parner不置位
+        passive发送给active的报文中，parner置位，actor不置位
+        以后该位都不置位
+14. actor_state_expired & partner_state_expired
+    置位表示本机处于脱机状态
+        active发送给passive的第一个报文中，actor置位，parner不置位
+        passive发送给active的报文中，parner置位，actor不置位
+        以后该位都不置位
+15. collector_max_delay
+    帧从发出到对端收到的延时，单位为10ms，该位均为0
