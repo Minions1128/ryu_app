@@ -10,8 +10,8 @@
                  |    |    |
                 h3   h4   h5
 
-    h1, h3, h5, h7 belongs vlan 10
-    h2, h4, h6, h8 belongs vlan 20
+    h1, h3, h5, h7 belong vlan 10
+    h2, h4, h6, h8 belong vlan 20
     links between s1, s2 and s2, s3 are trunk
     """
 
@@ -144,75 +144,6 @@ class SimpleSwitch13(app_manager.RyuApp):
             buffer_id=ofproto.OFP_NO_BUFFER, in_port=in_port,
             actions=trunk_actions, data=trunk_data.data)
         datapath.send_msg(trunk_out)
-
-    # @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
-    # def packet_in_handler_for_2_switch(self, ev):
-    #     msg = ev.msg
-    #     datapath = msg.datapath
-    #     ofproto = datapath.ofproto
-    #     parser = datapath.ofproto_parser
-    #     in_port = msg.match['in_port']
-    #     pkt = packet.Packet(msg.data)
-    #     eth = pkt.get_protocols(ethernet.ethernet)[0]
-    #     if eth.ethertype == ether_types.ETH_TYPE_LLDP:
-    #         return
-    #     dst = eth.dst
-    #     src = eth.src
-    #     data = None
-    #     if dst[0:5] == '33:33':
-    #         return
-    #     dpid = datapath.id
-    #     self.mac_to_port.setdefault(dpid, {})
-    #     self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
-    #     in_port_is_trunk = (self.vlan_to_port[dpid][in_port] == TRUNK_VLAN)
-    #     if in_port_is_trunk:
-    #         data, vlan = self.de_encapsulate_dot1q(pkt)
-    #     else:
-    #         vlan = self.vlan_to_port[dpid][in_port]
-    #     self.mac_to_port[dpid].setdefault(vlan, {})
-    #     self.mac_to_port[dpid][vlan][src] = in_port
-    #     out_ports = []
-    #     if dst in self.mac_to_port[dpid][vlan]:
-    #         is_add_flow = True
-    #         out_ports.append(self.mac_to_port[dpid][vlan][dst])
-    #     else:
-    #         is_add_flow = False
-    #         for port in self.vlan_to_port[dpid]:
-    #             if port == in_port:
-    #                 continue
-    #             if self.vlan_to_port[dpid][port] == vlan:
-    #                 out_ports.append(port)
-    #     actions = []
-    #     for out_port in out_ports:
-    #         actions.append(parser.OFPActionOutput(out_port))
-    #     if is_add_flow:
-    #         match = parser.OFPMatch(in_port=in_port,
-    #             eth_dst=dst, eth_src=src)
-    #         self.add_flow(datapath, 1, match, actions)
-    #     if in_port_is_trunk:
-    #         out = parser.OFPPacketOut(datapath=datapath,
-    #             buffer_id=ofproto.OFP_NO_BUFFER, in_port=in_port,
-    #             actions=actions, data=data.data)
-    #     else:
-    #         data = msg.data
-    #         out = parser.OFPPacketOut(datapath=datapath,
-    #             buffer_id=ofproto.OFP_NO_BUFFER, in_port=in_port,
-    #             actions=actions, data=data)
-    #     datapath.send_msg(out)
-    #     trunk_ports = []
-    #     for port in self.vlan_to_port[dpid]:
-    #         if self.vlan_to_port[dpid][port] == TRUNK_VLAN:
-    #             trunk_ports.append(port)
-    #     trunk_actions = []
-    #     for trunk_port in trunk_ports:
-    #         trunk_actions.append(
-    #             parser.OFPActionOutput(trunk_port))
-    #     trunk_data = self.encapsulate_dot1q(pkt, vlan)
-    #     trunk_out = parser.OFPPacketOut(datapath=datapath,
-    #         buffer_id=ofproto.OFP_NO_BUFFER, in_port=in_port,
-    #         actions=trunk_actions, data=trunk_data.data)
-    #     datapath.send_msg(trunk_out)
-    #     datapath.send_msg(out)
 
     def encapsulate_dot1q(self, pkt, tag):
         eth = pkt.get_protocol(ethernet.ethernet)
