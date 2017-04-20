@@ -6,7 +6,14 @@ from mininet.log import setLogLevel, info
 from functools import partial
 import threading
 import time
+"""
+Topology is as follows:
 
+                |--------switch2 --------|     |-----host2
+   host1 --- switch1                     switch4
+                |                        |     |-----host3
+                -------- switch3 ---------
+"""
 
 def get_controller_info(msg='ryu'):
     if msg == 'ryu':

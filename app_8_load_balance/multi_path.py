@@ -1,3 +1,5 @@
+# https://github.com/muzixing/ryu/tree/master/ryu/app/multipath
+# remove its qos policy
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event

@@ -1,4 +1,3 @@
-
 ovs-ofctl -O OpenFlow13 add-group s1 group_id=5566,type=select,bucket=weight:10,output:2,bucket=weight=90,output:3
 # ovs-ofctl -O OpenFlow13 add-group s1 group_id=5566,type=select,bucket=weight:50,output:2,bucket=weight=50,output:3
 ovs-ofctl -O OpenFlow13 add-flow s1 in_port=1,actions=group:5566
